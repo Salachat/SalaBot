@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - data:/usr/app/data
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: .env
+
+volumes:
+  data:

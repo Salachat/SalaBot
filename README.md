@@ -1,0 +1,3 @@
+# SalaBot
+
+Salachat's bot.

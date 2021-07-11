@@ -1,0 +1,51 @@
+{
+    "name": "salabot",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "contributors": [
+        "Antti <antti@antti.codes>"
+    ],
+    "license": "AGPL3",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "start": "node -r dotenv/config .",
+        "register": "node -r dotenv/config src/scripts/registerSlash.js",
+        "lint": "yarn eslint src --fix --ext js",
+        "format": "yarn prettier --write src",
+        "update": "yarn upgrade-interactive --latest",
+        "prepare": "husky install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Salachat/SalaBot.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Salachat/SalaBot/issues"
+    },
+    "keywords": [
+        "discord",
+        "bot"
+    ],
+    "engines": {
+        "node": ">=14"
+    },
+    "dependencies": {
+        "@joshdb/core": "^1.2.5",
+        "@joshdb/sqlite": "^1.1.9",
+        "bent": "^7.3.12",
+        "discord.js": "^13.0.0-dev.d433fe8.1626004976",
+        "dotenv": "^10.0.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^12.1.4",
+        "@commitlint/config-conventional": "^12.1.4",
+        "eslint": "^7.30.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.23.4",
+        "husky": "^7.0.1",
+        "lint-staged": "^11.0.0",
+        "prettier": "^2.3.2"
+    }
+}
