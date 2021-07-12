@@ -11,6 +11,14 @@
     "rules": {
         "no-console": "off",
         "import/extensions": "off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "import/no-unresolved": [
+            "error",
+            {
+                "commonjs": true,
+                "caseSensitive": true,
+                "ignore": ["config\\.js$"]
+            }
+        ]
     }
 }

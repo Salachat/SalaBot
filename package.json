@@ -10,10 +10,9 @@
     "private": true,
     "scripts": {
         "start": "node .",
-        "register": "node src/scripts/registerSlash.js",
         "lint": "yarn eslint src --fix --ext js",
         "format": "yarn prettier --write src",
-        "update": "yarn upgrade-interactive --latest",
+        "update": "yarn upgrade-interactive",
         "prepare": "husky install"
     },
     "repository": {

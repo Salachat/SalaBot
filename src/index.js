@@ -1,8 +1,11 @@
 import { Client, Intents } from "discord.js";
 import load from "./loader.js";
-// eslint-disable-next-line import/no-unresolved
 import config from "./config.js";
 
+// Set environment to development when none specified
+if (!process.env.NODE_ENV) process.env.NODE_ENV = "development";
+
+// Create the client
 const client = new Client({
     messageCacheLifetime: 60 * 60 * 24,
     messageSweepInterval: 60 * 30,
@@ -18,10 +21,11 @@ const client = new Client({
     },
 });
 
-client.config = config;
-client.login(client.config.token);
+// Login and start loading modules
+client.login(config.token);
 load(client);
 
+// Route shutdown signals to gracefully shutdown
 process.on("SIGINT", () => process.exit());
 process.on("SIGTERM", () => process.exit());
 process.on("exit", () => {
