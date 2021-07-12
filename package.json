@@ -9,8 +9,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "start": "node -r dotenv/config .",
-        "register": "node -r dotenv/config src/scripts/registerSlash.js",
+        "start": "node .",
+        "register": "node src/scripts/registerSlash.js",
         "lint": "yarn eslint src --fix --ext js",
         "format": "yarn prettier --write src",
         "update": "yarn upgrade-interactive --latest",
@@ -34,8 +34,7 @@
         "@joshdb/core": "^1.2.5",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
-        "discord.js": "^13.0.0-dev.1dcad05.1626091387",
-        "dotenv": "^10.0.0"
+        "discord.js": "^13.0.0-dev.1dcad05.1626091387"
     },
     "devDependencies": {
         "@commitlint/cli": "^12.1.4",
