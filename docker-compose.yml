@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - data:/usr/app/data
+      - data:/app/data
     restart: unless-stopped
     stop_grace_period: 1m
     env_file: .env
