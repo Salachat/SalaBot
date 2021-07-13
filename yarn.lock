@@ -803,10 +803,10 @@ discord-api-types@^0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e.tgz#d5f36f5712ec8fe2fe928b5c37618c94a3969d6a"
   integrity sha512-ttRA/8e/WKHDbGFfED5WlS7gID+kalmNr6iMiWBCvkphQ7kFHiTOVbnj/zX9ksaRaYXp/I38SCQ+qZvLu8DJZg==
 
-discord.js@^13.0.0-dev.1dcad05.1626091387:
-  version "13.0.0-dev.1dcad05.1626091387"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.1dcad05.1626091387.tgz#e689512ade4365776cdefcb8c36cfdbc023e4760"
-  integrity sha512-XdNADDxZGgD1qO0kaw22k0VSqqCW0awizweE5UZ6BsgdpTDdsFJne+MHrIAcn3cvH1b8wIcz+tfsXMBVzdLj/g==
+discord.js@^13.0.0-dev.1dcad05.1626178061:
+  version "13.0.0-dev.1dcad05.1626178061"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.1dcad05.1626178061.tgz#c71745d0d91c4746433e0a2d7831531304ac2367"
+  integrity sha512-u5YmV4qkcW3brtwj5zjt36Gm8opaffO4e7sRlqSGxvk+UO/vVaskcz0/BBNMuINmcdbJTuA/nXPksCBOzUxfbw==
   dependencies:
     "@discordjs/builders" "^0.2.0"
     "@discordjs/collection" "^0.1.6"
@@ -1627,10 +1627,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
-lint-staged@^11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-11.0.0.tgz#24d0a95aa316ba28e257f5c4613369a75a10c712"
-  integrity sha512-3rsRIoyaE8IphSUtO1RVTFl1e0SLBtxxUOPBtHxQgBHS5/i6nqvjcUfNioMa4BU9yGnPzbO+xkfLtXtxBpCzjw==
+lint-staged@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-11.0.1.tgz#1b8ae8ed5a52ed87252db95fe008c2618c85f55a"
+  integrity sha512-RkTA1ulE6jAGFskxpGAwxfVRXjHp7D9gFg/+KMARUWMPiVFP0t28Em2u0gL8sA0w3/ck3TC57F2v2RNeQ5XPnw==
   dependencies:
     chalk "^4.1.1"
     cli-truncate "^2.1.0"
