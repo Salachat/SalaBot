@@ -29,7 +29,7 @@ export default async (client, command) => {
     } catch (e) {
         // If command errors, try to tell the user
         try {
-            await command.reply({
+            await command.followUp({
                 content: "Something went wrong while executing that command...",
                 ephemeral: true,
             });
