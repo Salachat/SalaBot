@@ -36,7 +36,7 @@ export default {
             ],
         },
         // User permission level to use the command
-        permission: 0,
+        permission: 2,
     },
     execute: async (client, command) => {
         // Get options and apply defaults
