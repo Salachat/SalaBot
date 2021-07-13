@@ -5,6 +5,8 @@ const config = {
     admins: [],
     // Guild to create slash commands in when in development environment
     devGuild: "",
+    // Way to skip ensuring commands in production
+    skipSlashEnsure: false,
     // The default settings for guild settings
     defaultSettings: {
         log: null,
