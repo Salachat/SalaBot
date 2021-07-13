@@ -34,7 +34,7 @@
         "@joshdb/core": "^1.2.5",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
-        "discord.js": "^13.0.0-dev.d433fe8.1626004976",
+        "discord.js": "^13.0.0-dev.1dcad05.1626178061",
         "dotenv": "^10.0.0"
     },
     "devDependencies": {
