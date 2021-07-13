@@ -29,7 +29,7 @@ const config = {
             guildOnly: true,
             check: (command) => {
                 try {
-                    return command.member.hasPermission("ADMINISTRATOR");
+                    return command.member.permissionsIn(command.channel).has("ADMINISTRATOR");
                 } catch (e) {
                     return false;
                 }
