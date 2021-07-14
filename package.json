@@ -9,11 +9,10 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "start": "node -r dotenv/config .",
-        "register": "node -r dotenv/config src/scripts/registerSlash.js",
+        "start": "node .",
         "lint": "yarn eslint src --fix --ext js",
         "format": "yarn prettier --write src",
-        "update": "yarn upgrade-interactive --latest",
+        "update": "yarn upgrade-interactive",
         "prepare": "husky install"
     },
     "repository": {
@@ -34,8 +33,7 @@
         "@joshdb/core": "^1.2.5",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
-        "discord.js": "^13.0.0-dev.d433fe8.1626004976",
-        "dotenv": "^10.0.0"
+        "discord.js": "^13.0.0-dev.1dcad05.1626178061"
     },
     "devDependencies": {
         "@commitlint/cli": "^12.1.4",
@@ -45,7 +43,7 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.23.4",
         "husky": "^7.0.1",
-        "lint-staged": "^11.0.0",
+        "lint-staged": "^11.0.1",
         "prettier": "^2.3.2"
     }
 }

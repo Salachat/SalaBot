@@ -38,8 +38,6 @@ Running the bot shouldn't be hard for an experienced user but might give a heada
 1. Create an application at [Discord Developer Portal](https://discord.com/developers/applications)
 1. Create a bot for the application
 1. Copy the bot's token and enable all intents (Too lazy to worry about problems with intents)
-1. Copy `.env.example` to `.env`
-1. Fill in the necessary fields
 1. Copy the `src/config.example.js` to `src/config.js`
 1. Edit the config to your needs
 1. Install dependencies with `yarn`
