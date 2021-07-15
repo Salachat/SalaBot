@@ -1,3 +1,4 @@
+import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
 
 /**
@@ -27,7 +28,7 @@ const load = async (client) => {
     console.log("Events loaded!");
 
     console.log("Loading commands...");
-    client.commands = new Map();
+    client.commands = new Collection();
     // List all categories and wait for them to load
     const cmdCategories = await readdir("./src/commands");
     await Promise.all(

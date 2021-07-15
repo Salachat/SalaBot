@@ -14,24 +14,6 @@ export const perm = (command) => {
     return lvl;
 };
 
-/**
- * Load a slash command by creating or modifying it in the development guild or globally
- * @param {Client} client
- * @param {ApplicationCommandData} data
- */
-export const ensureCommand = async (client, data) => {
-    if (process.env.NODE_ENV === "development") {
-        const devGuild = await client.guilds.fetch(config.devGuild);
-        const command = devGuild.commands.cache.find((cmd) => cmd.name === data.name);
-        if (!command) await devGuild.commands.create(data);
-        else await devGuild.commands.edit(command.id, data);
-    } else {
-        const command = client.application.commands.cache.find((cmd) => cmd.name === data.name);
-        if (!command) await client.application.commands.create(data);
-        else await client.application.commands.edit(command.id, data);
-    }
-};
-
 export const cleanEvalResponse = (res) => {
     if (typeof res === "string") return res.replaceAll(config.token, "<TOKEN>").substring(0, 1900);
     return inspect(res, { depth: 3 }).replaceAll(config.token, "<TOKEN>").substring(0, 1900);
