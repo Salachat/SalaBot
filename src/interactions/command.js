@@ -40,6 +40,8 @@ export default async (client, command) => {
                 content: "Something went wrong while executing that command...",
                 ephemeral: true,
             });
+        } catch (_) {
+            /* ignore */
         } finally {
             // And log to console
             console.error(e);
