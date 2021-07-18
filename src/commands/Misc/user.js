@@ -73,7 +73,6 @@ export default {
 
         command.reply({
             embeds: [embed],
-            ephemeral: true,
         });
     },
 };
