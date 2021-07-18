@@ -8,6 +8,7 @@ export default {
         },
         // User permission level to use the command
         permission: 2,
+        guildOnly: false,
     },
     execute: async (_, command) => {
         await command.reply({

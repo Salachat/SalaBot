@@ -25,8 +25,15 @@ RUN apk update && \
     apk upgrade && \
     apk add dumb-init
 
-COPY --from=builder /app .
-COPY src/ src/
+RUN addgroup -g 1000 node && \
+    adduser -u 1000 -G node -s /bin/sh -D node && \
+    mkdir /app/data && \
+    chown -R node:node /app
+
+COPY --chown=node:node --from=builder /app .
+COPY --chown=node:node src/ src/
+
+USER node:node
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 

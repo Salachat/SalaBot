@@ -6,6 +6,13 @@ export default async (client, command) => {
         const cmd = client.commands.get(command.commandName);
         // Check if handler exists
         if (cmd) {
+            if (cmd.data.guildOnly && !command.inGuild()) {
+                await command.reply({
+                    content: "This command can only be used inside a server.",
+                    ephemeral: true,
+                });
+                return;
+            }
             // Check user permissions
             // (Slash command permissions are too hard)
             const permission = perm(command);
@@ -33,6 +40,8 @@ export default async (client, command) => {
                 content: "Something went wrong while executing that command...",
                 ephemeral: true,
             });
+        } catch (_) {
+            /* ignore */
         } finally {
             // And log to console
             console.error(e);

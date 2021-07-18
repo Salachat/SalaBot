@@ -1,5 +1,4 @@
 import config from "./config.js";
-import { ensureCommand } from "./util.js";
 
 /**
  * Create or update slash commands
@@ -9,13 +8,13 @@ const ensure = async (client) => {
     console.log("Ensuring slash commands...");
 
     await client.application.commands.fetch();
-    await (await client.guilds.fetch(config.devGuild)).commands.fetch();
+    const devGuild = await client.guilds.fetch(config.devGuild);
+    await devGuild.commands.fetch();
 
-    await Promise.all(
-        Array.from(client.commands.values()).map(({ data: { slash } }) =>
-            ensureCommand(client, slash)
-        )
-    );
+    const commands = client.commands.map(({ data: { slash } }) => slash);
+
+    if (process.env.NODE_ENV === "development") await devGuild.commands.set(commands);
+    else await client.application.commands.set(commands);
 
     console.log("Slash commands ensured!");
 };

@@ -1,3 +1,4 @@
+import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
 
 /**
@@ -16,6 +17,7 @@ const load = async (client) => {
             try {
                 // Dynamically import
                 const event = (await import(`./events/${f}`)).default;
+                if (!event) throw new Error("Event doesn't export default.");
                 // Bind it to the client
                 client.on(eventName, event.bind(null, client));
             } catch (e) {
@@ -26,7 +28,7 @@ const load = async (client) => {
     console.log("Events loaded!");
 
     console.log("Loading commands...");
-    client.commands = new Map();
+    client.commands = new Collection();
     // List all categories and wait for them to load
     const cmdCategories = await readdir("./src/commands");
     await Promise.all(
@@ -42,6 +44,7 @@ const load = async (client) => {
                     try {
                         // Dynamically import
                         const command = (await import(`./commands/${cat}/${f}`)).default;
+                        if (!command) throw new Error("Command doesn't export default.");
                         // Save the handler in a Map
                         client.commands.set(commandName, command);
                     } catch (e) {
