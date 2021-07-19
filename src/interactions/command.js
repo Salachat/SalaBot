@@ -36,10 +36,17 @@ export default async (client, command) => {
     } catch (e) {
         // If command errors, try to tell the user
         try {
-            await command.followUp({
-                content: "Something went wrong while executing that command...",
-                ephemeral: true,
-            });
+            if (command.replied || command.deferred) {
+                await command.editReply({
+                    content: "Something went wrong while executing that command...",
+                    ephemeral: true,
+                });
+            } else {
+                await command.reply({
+                    content: "Something went wrong while executing that command...",
+                    ephemeral: true,
+                });
+            }
         } catch (_) {
             /* ignore */
         } finally {

@@ -33,7 +33,9 @@
         "@joshdb/core": "^1.2.5",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
-        "discord.js": "^13.0.0-dev.1dcad05.1626178061"
+        "discord.js": "^13.0.0-dev.1dcad05.1626178061",
+        "fast-xml-parser": "^3.19.0",
+        "node-cron": "^3.0.0"
     },
     "devDependencies": {
         "@commitlint/cli": "^12.1.4",
