@@ -96,3 +96,63 @@ export const formatDuration = (ms, options = {}) => {
         )
         .join(", ");
 };
+
+export const paginatedEmbed = async (client, command, pages, endpage = null, timeout = 120_000) => {
+    let page = 0;
+    const controls = ["⬅️", "➡️", "❌"];
+    await command.reply({ embeds: [pages[page]] });
+    const embedMsg = await command.fetchReply();
+
+    // eslint-disable-next-line no-await-in-loop
+    for (let i = 0; i < controls.length; i += 1) await embedMsg.react(controls[i]);
+
+    const collector = embedMsg.createReactionCollector(
+        (reaction, user) => controls.includes(reaction.emoji.name) && user.id === command.user.id,
+        {
+            time: timeout,
+            dispose: true,
+        }
+    );
+
+    const changePage = async (reaction) => {
+        if (command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+            await reaction.users.remove(command.user);
+        switch (reaction.emoji.name) {
+            case controls[0]:
+                page = page > 0 ? page - 1 : pages.length - 1;
+                await embedMsg.edit({ embeds: [pages[page]] });
+                break;
+            case controls[1]:
+                page = page + 1 < pages.length ? page + 1 : 0;
+                await embedMsg.edit({ embeds: [pages[page]] });
+                break;
+            case controls[2]:
+                collector.stop();
+                break;
+            default:
+        }
+    };
+
+    collector.on("collect", changePage);
+    if (!command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+        collector.on("remove", changePage);
+
+    collector.on("end", async () => {
+        if (!embedMsg.deleted) {
+            if (command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+                await embedMsg.reactions.removeAll();
+            if (endpage !== null) {
+                await embedMsg.edit(endpage);
+            } else {
+                const modifiedPage = pages[page];
+                modifiedPage.setFooter(
+                    `${modifiedPage.footer.text} | This session has ended`,
+                    modifiedPage.footer.iconURL
+                );
+                await embedMsg.edit({ embeds: [modifiedPage] });
+            }
+        }
+    });
+
+    return embedMsg;
+};
