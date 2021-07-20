@@ -2,7 +2,7 @@ import { MessageEmbed, Util } from "discord.js";
 import parser from "fast-xml-parser";
 
 import { rss } from "../../db.js";
-import { fetchFeed, formatPost, parseFeed } from "../../rss/rssUtil.js";
+import { fetchFeed, formatPost, parseFeed, getPlaceholders } from "../../rss/rssUtil.js";
 import { paginatedEmbed } from "../../util.js";
 
 export default {
@@ -151,66 +151,79 @@ export default {
         guildOnly: true,
     },
     execute: async (client, command) => {
-        const subcommand = command.options.first();
-        switch (subcommand.name) {
+        // Defer the command as it might take a while
+        await command.defer();
+        // Switch based on the subcommand
+        switch (command.options.getSubCommand()) {
             case "add": {
-                const { channel } = subcommand.options.get("channel");
-                const feed = subcommand.options.get("feed").value.toString();
+                // Get channel and feed url from slash options
+                const channel = command.options.getChannel("channel");
+                const feed = command.options.getString("feed");
 
+                // Ensure the RSS settings exist and get them
                 const guildData = await rss.ensure(command.guildId, {
                     gid: command.guildId,
                     feeds: {},
                     autoNum: 1,
                 });
 
+                // Check that the channel is a text channel
                 if (channel.type !== "GUILD_TEXT") {
-                    await command.reply({
+                    await command.editReply({
                         content: "The channel must be a text channel.",
                     });
                     return;
                 }
 
+                // Check permissions
                 if (
                     !channel
                         .permissionsFor(client.user)
                         .has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"])
                 ) {
-                    await command.reply({
+                    // Reply with explanation
+                    await command.editReply({
                         content:
                             "I am missing some permissions on that channel.\nMake sure I can view the channel, send messages and send embeds.",
                     });
                     return;
                 }
 
+                // Get the raw feed and parsed items
                 let feedData;
                 let parsedData;
                 try {
                     feedData = await fetchFeed(feed, true);
                     parsedData = parser.parse(feedData);
                 } catch (e) {
-                    await command.reply({
+                    // Reply with error if such happens
+                    await command.editReply({
                         content: `Encountered an error in the RSS feed: \`${e.message}\``,
                     });
                     return;
                 }
 
-                const feedTitle = parsedData?.rss?.channel?.title;
-                const items = parsedData?.rss?.channel?.item;
+                // Get feed title and items
+                const feedTitle = parsedData?.rss?.channel?.title ?? parsedData?.feed?.title;
+                const items = parsedData?.rss?.channel?.item ?? parsedData?.feed?.entry;
 
+                // Check that title exists
                 if (!feedTitle) {
-                    await command.reply({
-                        content: "Invalid rss feed. Couldn't find channel title.",
+                    await command.editReply({
+                        content: "Invalid RSS feed. Couldn't find channel title.",
                     });
                     return;
                 }
 
+                // Check that some items exists
                 if (!items) {
-                    await command.reply({
-                        content: "Invalid rss feed. Couldn't find any items.",
+                    await command.editReply({
+                        content: "Invalid RSS feed. Couldn't find any items.",
                     });
                     return;
                 }
 
+                // Save the RSS feed
                 await rss.set(`${command.guildId}.feeds.${guildData.autoNum}`, {
                     fid: guildData.autoNum,
                     cid: channel.id,
@@ -234,8 +247,11 @@ export default {
                         },
                     },
                 });
+                // Increase id autonum
                 await rss.inc(`${command.guildId}.autoNum`);
-                await command.reply({
+                // Send a success message
+                // Escape title from markdown
+                await command.editReply({
                     content: `${channel} is now following **${Util.escapeMarkdown(
                         feedTitle
                     )}** (<${feed}>).\nMake sure I will have permissions to that channel.\nEdit the posts by using \`/rss edit\``,
@@ -243,28 +259,36 @@ export default {
                 break;
             }
             case "list": {
+                // Ensure and get guild RSS data
                 const guildData = await rss.ensure(command.guildId, {
                     gid: command.guildId,
                     feeds: {},
                     autoNum: 1,
                 });
+                // Get feeds
                 const feeds = Object.values(guildData.feeds);
+                // Incase no feeds reply simply
                 if (feeds.length === 0) {
-                    await command.reply({
+                    await command.editReply({
                         content: "No feeds subscribed.",
                     });
                     return;
                 }
+                // Paginate feeds
                 const pages = [];
                 for (let i = 0; i < feeds.length; i += 10) pages.push(feeds.slice(i, i + 10));
+                // Use the paginatedEmbed utility to send the pages
                 await paginatedEmbed(
                     client,
                     command,
+                    // Map pages to embeds
                     pages.map((feedChunk, i) => {
                         const embed = new MessageEmbed()
                             .setTitle(`Feeds (${feeds.length})`)
                             .setColor("#9799ca")
+                            // paginatedEmbed function doesn't do page numbers so we have to do them here
                             .setFooter(`Page ${i + 1}/${pages.length}`);
+                        // Add a field for each feed
                         feedChunk.forEach((feed) => {
                             embed.addField(
                                 `${feed.fid}. ${feed.title}`,
@@ -277,20 +301,25 @@ export default {
                 break;
             }
             case "remove": {
-                const feed = subcommand.options.get("id").value.toString();
+                // Get feed id
+                const feed = command.options.getInteger("id").toString();
+                // Ensure and get guild RSS data
                 const guildData = await rss.ensure(command.guildId, {
                     gid: command.guildId,
                     feeds: {},
                     autoNum: 1,
                 });
+                // Test id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(feed)) {
-                    await command.reply({
+                    await command.editReply({
                         content: "Invalid feed id. Use `/rss list` to find your feed id.",
                     });
                     return;
                 }
+                // Delete the field
                 await rss.delete(`${command.guildId}.feeds.${feed}`);
-                await command.reply({
+                // Reply succesfully and yet again escape markdown
+                await command.editReply({
                     content: `Feed **${Util.escapeMarkdown(guildData.feeds[feed].title)}** (<${
                         guildData.feeds[feed].url
                     }>) has been removed!`,
@@ -298,47 +327,64 @@ export default {
                 break;
             }
             case "test": {
-                const id = subcommand.options.get("id").value.toString();
-                const placeholders = subcommand.options.get("placeholders")?.value ?? false;
+                // Get feed id and optional placeholders boolean
+                const id = command.options.getInteger("id").toString();
+                const placeholders = command.options.getBoolean("placeholders") ?? false;
+                // Ensure and get guild RSS data
                 const guildData = await rss.ensure(command.guildId, {
                     gid: command.guildId,
                     feeds: {},
                     autoNum: 1,
                 });
 
+                // Test id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(id)) {
-                    await command.reply({
+                    await command.editReply({
                         content: "Invalid feed id. Use `/rss list` to find your feed id.",
                     });
                     return;
                 }
+                // Get the specified feed
                 const feed = guildData.feeds[id];
 
+                // Fetch the feed
                 let feedData;
                 try {
                     feedData = await fetchFeed(feed.url);
                 } catch (e) {
-                    await command.reply({
+                    // Send error if such occurs
+                    await command.editReply({
                         content: `Encountered an error in the RSS feed: \`${e.message}\``,
                     });
                     return;
                 }
 
+                // Grab a random item
                 const randomPost = feedData[Math.floor(Math.random() * feedData.length)];
 
+                // If the user wants placeholders
                 if (placeholders) {
-                    await command.reply({
-                        content: `\`\`\`md\n${Object.entries(randomPost)
-                            .map(([key, val]) => `# {${key}}\n${val}`)
+                    // Get placeholders and format them nicely
+                    await command.editReply({
+                        content: `\`\`\`md\n${getPlaceholders(randomPost)
+                            // Escape code blocks as to not mess formatting
+                            .map(
+                                ([key, val]) =>
+                                    `# {${Util.escapeCodeBlock(key)}}\n${Util.escapeCodeBlock(val)}`
+                            )
                             .join(
                                 "\n"
+                                // List inbuilt placeholders
                             )}\n\`\`\`\nTo leave a field empty, use the inbuilt \`{empty}\` placeholder.\nTo get a newline, use the inbuilt \`{newline}\` placeholder.`,
                     });
                 } else {
+                    // Otherwise
                     try {
-                        await command.reply(formatPost(randomPost, feed.format));
+                        // Format and reply with the random item
+                        await command.editReply(formatPost(randomPost, feed.format));
                     } catch (e) {
-                        await command.reply({
+                        // And send the error if such occurs
+                        await command.editReply({
                             content: `Encountered an error in the RSS feed: \`${e.message}\``,
                         });
                     }
@@ -346,32 +392,36 @@ export default {
                 break;
             }
             case "edit": {
-                const feed = subcommand.options.get("id").value.toString();
-                const { value: property } = subcommand.options.get("property");
-                const { value } = subcommand.options.get("value");
+                // Get the feed id, property to edit a value to set to
+                const feed = command.options.getInteger("id").toString();
+                const property = command.options.getString("property");
+                const value = command.options.getString("value");
 
+                // Ensure and get guild RSS data
                 const guildData = await rss.ensure(command.guildId, {
                     gid: command.guildId,
                     feeds: {},
                     autoNum: 1,
                 });
 
+                // Check id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(feed)) {
-                    await command.reply({
+                    await command.editReply({
                         content: "Invalid feed id. Use `/rss list` to find your feed id.",
                     });
                     return;
                 }
 
+                // Save to database and reply
                 await rss.set(`${command.guildId}.feeds.${feed}.format.${property}`, value);
-
-                await command.reply({
+                await command.editReply({
                     content: "Format updated. Use `/rss test` to test it out.",
                 });
                 break;
             }
             default: {
-                await command.reply({
+                // This shouldn't ever trigger but handle it anyway
+                await command.editReply({
                     content: "Unknown subcommand.",
                 });
             }

@@ -7,9 +7,12 @@ if (!process.env.NODE_ENV) process.env.NODE_ENV = "development";
 
 // Create the client
 const client = new Client({
+    // Caches
     messageCacheLifetime: 60 * 60 * 24,
     messageSweepInterval: 60 * 30,
+    // Pre disable pings
     allowedMentions: { users: [], roles: [] },
+    // Only the necessary intentss
     intents: [
         Intents.FLAGS.DIRECT_MESSAGES,
         Intents.FLAGS.GUILDS,
@@ -17,6 +20,7 @@ const client = new Client({
         Intents.FLAGS.GUILD_MEMBERS,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
     ],
+    // Ws events to receive more data
     ws: {
         large_threshold: 100,
     },

@@ -48,7 +48,7 @@ export default async (client, command) => {
                 });
             }
         } catch (_) {
-            /* ignore */
+            // Ignore
         } finally {
             // And log to console
             console.error(e);
