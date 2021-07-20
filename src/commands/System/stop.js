@@ -11,10 +11,12 @@ export default {
         guildOnly: false,
     },
     execute: async (_, command) => {
+        // Send a message
         await command.reply({
             content: "Shutting down...",
             ephemeral: true,
         });
+        // Exit process and handler gracefully in the exit event
         process.exit();
     },
 };

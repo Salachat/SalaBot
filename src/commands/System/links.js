@@ -12,14 +12,17 @@ export default {
         permission: 0,
         guildOnly: false,
     },
-    execute: (client, command) => {
+    execute: async (client, command) => {
+        // Create the embed
         const embed = new MessageEmbed().setTitle("Links").setDescription(
+            // Generate the invite link on the fly
             `[Invite](${client.generateInvite({
                 scopes: ["bot", "applications.commands"],
                 permissions: ["ADMINISTRATOR"],
             })})\n[GitHub](https://github.com/Salachat/SalaBot)`
         );
-        command.reply({
+        // Reply with the embed
+        await command.reply({
             embeds: [embed],
         });
     },

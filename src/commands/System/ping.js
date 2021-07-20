@@ -11,11 +11,12 @@ export default {
         guildOnly: false,
     },
     execute: async (client, command) => {
-        // Simple reply with a "Pong!
-        await command.reply("Pong!");
+        // Defer so we can get replies easily
+        await command.defer();
+        // Reply
+        const reply = await command.editReply("Ping?");
         // Calculate ping and edit the message
-        const reply = await command.fetchReply();
-        reply.edit(
+        await command.editReply(
             `Pong!\nPing: ${reply.createdTimestamp - command.createdTimestamp}ms\nAPI: ${
                 client.ws.ping
             }ms`

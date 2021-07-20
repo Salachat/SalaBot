@@ -21,9 +21,19 @@ export default {
         guildOnly: true,
     },
     execute: async (_, command) => {
-        const { user, member: _member } = command.options.get("user");
-        const member = _member ? await command.guild.members.fetch(_member.user.id) : null;
+        // Defer the command as it might take a while
+        await command.defer();
+        // Get the user option
+        const user = command.options.getUser("user");
+        // Try to fetch the member
+        let member;
+        try {
+            member = await command.guild.members.fetch(user);
+        } catch (e) {
+            member = null;
+        }
 
+        // Create the embed
         const embed = new MessageEmbed()
             .setAuthor(
                 `${user.tag}${user.bot ? " [BOT]" : ""}`,
@@ -31,30 +41,38 @@ export default {
             )
             .setDescription(`Ping: ${user.toString()}\nID: \`${user.id}\``)
             .setThumbnail(user.displayAvatarURL({ dynamic: true }));
+        // Check if users has flags aka badges
         if (user.flags && user.flags.toArray().length) {
             embed.addField(
                 "Badges",
+                // Format badges
                 user.flags
                     .toArray()
+                    // Spaces
                     .map((v) => v.toLowerCase().replace(/_/g, " "))
                     .join(", ")
+                    // Title case
                     .replace(/\b(.)/g, (c) => c.toUpperCase())
             );
         }
         embed.addField(
             "Joined discord",
+            // Use Discord markdown for timestamps
             `<t:${Math.round(user.createdTimestamp / 1000)}> (<t:${Math.round(
                 user.createdTimestamp / 1000
             )}:R>)`
         );
 
+        // Add additional member fields if member was found
         if (member) {
+            // Boosting status with markdown timestamp or a funny message
             const boosting = member.premiumSince
                 ? `Since <t:${Math.round(member.premiumSince / 1000)}>`
                 : "Not boosting :(";
             embed
                 .addField(
                     "Joined server",
+                    // Use the fancy datetime markdown yet again
                     `<t:${Math.round(member.joinedTimestamp / 1000)}> (<t:${Math.round(
                         member.joinedTimestamp / 1000
                     )}:R>)`
@@ -63,15 +81,19 @@ export default {
                 .addField(
                     "Roles",
                     member.roles.cache
-                        .map((r) => (r.id === command.guild.id ? null : `<@&${r.id}>`))
+                        // Filter out everyone and turn roles into mentions
+                        .map((r) => (r.id === command.guild.id ? null : r.toString()))
                         .filter(Boolean)
+                        // This is the max amount of roles we can fit in the embed
                         .splice(0, 44)
                         .join(" ")
                 )
+                // Color the embed using the members role
                 .setColor(member.displayHexColor);
         }
 
-        command.reply({
+        // Reply with the embed
+        await command.editReply({
             embeds: [embed],
         });
     },
