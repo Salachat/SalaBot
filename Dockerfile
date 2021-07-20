@@ -11,7 +11,7 @@ RUN apk update && \
 
 COPY yarn.lock package.json ./
 
-RUN sed -i 's/"prepare": "husky install .github\/husky"/"prepare": ""/' ./package.json
+RUN sed -i 's/"prepare": "husky install"/"prepare": ""/' ./package.json
 
 RUN yarn --production=true --frozen-lockfile --link-duplicates
 
