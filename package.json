@@ -35,7 +35,6 @@
         "bent": "^7.3.12",
         "bufferutil": "^4.0.3",
         "discord.js": "^13.0.0-dev.02f55f0.1626742085",
-        "erlpack": "discord/erlpack",
         "fast-xml-parser": "^3.19.0",
         "he": "^1.2.0",
         "node-cron": "^3.0.0",
