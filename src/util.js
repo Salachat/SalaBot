@@ -216,8 +216,8 @@ export const paginatedEmbed = async (client, command, pages, endpage = null, tim
                 // Otherwise edit current page footer to explain situation
                 const modifiedPage = pages[page];
                 modifiedPage.setFooter(
-                    `${modifiedPage.footer.text} | This session has ended`,
-                    modifiedPage.footer.iconURL
+                    `${modifiedPage?.footer?.text ?? ""} | This session has ended`,
+                    modifiedPage?.footer?.iconURL
                 );
                 await embedMsg.edit({ embeds: [modifiedPage] });
             }
