@@ -230,6 +230,7 @@ export default {
                     title: feedTitle,
                     url: feed,
                     oldData: parseFeed(feedData),
+                    errorCount: 0,
                     format: {
                         text: "**{title}**\n{description}\n\n<{link}>",
                         embed: {

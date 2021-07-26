@@ -14,7 +14,7 @@ export default (client) => {
         // Loop them
         servers.forEach(async ({ gid, feeds }) => {
             // Loop their feeds
-            Object.values(feeds).forEach(async ({ fid, cid, url, oldData, format }) => {
+            Object.values(feeds).forEach(async ({ fid, cid, url, oldData, errorCount, format }) => {
                 // Catch any errors
                 try {
                     // Fetch the channel
@@ -35,7 +35,26 @@ export default (client) => {
                     let newData;
                     try {
                         newData = await fetchFeed(url);
+                        // Reset error count on succcess
+                        if (errorCount !== 0) await rss.set(`${gid}.feeds.${fid}.errorCount`, 0);
                     } catch (e) {
+                        // Only for random HTTP errors
+                        if (e.message.startsWith("Feed url threw")) {
+                            // Wait until error has been happening for an hour
+                            if (errorCount + 1 >= 6) {
+                                // Reset error count to wait another hour
+                                await rss.set(`${gid}.feeds.${fid}.errorCount`, 0);
+                                // Send message
+                                await channel.send({
+                                    content: `No valid response has been received from the RSS feed in the past hour.\nCurrent error message: \`${e.message}\`\nI'll report back in an hour if the error continues.`,
+                                });
+                                return;
+                            }
+                            // Increase error count
+                            await rss.inc(`${gid}.feeds.${fid}.errorCount`);
+                            return;
+                        }
+
                         // Handle errors by sending a error message
                         await channel.send({
                             content: `Encountered an error in the RSS feed: \`${e.message}\``,
@@ -54,7 +73,7 @@ export default (client) => {
                         } catch (e) {
                             // Send an error message if that fails
                             await channel.send({
-                                content: `Encountered an error in the RSS feed: \`${e.message}\``,
+                                content: `Encountered an error in RSS item: \`${e.message}\``,
                             });
                         }
                     });
