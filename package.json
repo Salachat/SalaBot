@@ -30,7 +30,7 @@
         "node": ">=14"
     },
     "dependencies": {
-        "@joshdb/core": "^1.2.5",
+        "@joshdb/core": "^1.2.7",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
         "bufferutil": "^4.0.3",
