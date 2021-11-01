@@ -43,7 +43,7 @@
         "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
-        "@commitlint/cli": "^12.1.4",
+        "@commitlint/cli": "^14.1.0",
         "@commitlint/config-conventional": "^12.1.4",
         "eslint": "^7.31.0",
         "eslint-config-airbnb-base": "^14.2.1",
