@@ -1979,20 +1979,20 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-minecraft-data@^2.70.0:
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/minecraft-data/-/minecraft-data-2.88.0.tgz#262b111ed803c4019025972f690cf9fbd0c25b14"
-  integrity sha512-rHI5as9Hqey6sb7i3wLlFIxwV+GnbzSaIZ8nR86I74XkoQsvmtjuB+uEGjNWoO2NILVDQDQZQgkssnA7VBgIuA==
+minecraft-data@^2.85.1:
+  version "2.95.0"
+  resolved "https://registry.yarnpkg.com/minecraft-data/-/minecraft-data-2.95.0.tgz#d471a0d0cbd335cf4586d9f8764e4ed693deb547"
+  integrity sha512-e/WgRMU86diPtuqYJncmiAszpy8LmNjMb+raEwGFY0+eFi84WcinXyts7Lcuvj/lTYvX5tuQ1wFMjOpLwdTk+w==
 
 minecraft-folder-path@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minecraft-folder-path/-/minecraft-folder-path-1.2.0.tgz#08ea450bfb20dbb02cf6e1470864e2f0d652e477"
   integrity sha512-qaUSbKWoOsH9brn0JQuBhxNAzTDMwrOXorwuRxdJKKKDYvZhtml+6GVCUrY5HRiEsieBEjCUnhVpDuQiKsiFaw==
 
-minecraft-protocol@^1.25.0:
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/minecraft-protocol/-/minecraft-protocol-1.25.0.tgz#dc8b9498eb8147b02e23a8249b7326ebc15dea9c"
-  integrity sha512-xAyjw03t/sKv7xBk4AxZnLMv5G/cJuXExAMtpK1lxZ5ILHfJObtz9m12tc1eiR7nXkoBgyUQptTZX81OWXyFtQ==
+minecraft-protocol@^1.27.1:
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/minecraft-protocol/-/minecraft-protocol-1.27.1.tgz#5d528c7c2cfa898e70e083b81c5b333baee39596"
+  integrity sha512-pr6EWAm5qUPnYAXw9tmpfJosK0i5c2amT/qgQL16y9gtFKSC3WEPv8AQR2hLytqLLJ4SBHCukDAaHCJPRnBBZQ==
   dependencies:
     "@azure/msal-node" "^1.0.0-beta.3"
     "@xboxreplay/xboxlive-auth" "^3.3.3"
@@ -2002,7 +2002,7 @@ minecraft-protocol@^1.25.0:
     endian-toggle "^0.0.0"
     lodash.get "^4.1.2"
     lodash.merge "^4.3.0"
-    minecraft-data "^2.70.0"
+    minecraft-data "^2.85.1"
     minecraft-folder-path "^1.1.0"
     node-fetch "^2.6.1"
     node-rsa "^0.4.2"
