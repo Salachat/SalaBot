@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:16 AS builder
+FROM node:16-alpine AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ RUN apk update && \
     apk add \
     make \
     g++ \
-    python2
+    python3
 
 COPY yarn.lock package.json ./
 
@@ -15,7 +15,7 @@ RUN sed -i 's/"prepare": "husky install"/"prepare": ""/' ./package.json
 
 RUN yarn --production=true --frozen-lockfile --link-duplicates
 
-FROM mhart/alpine-node:16
+FROM node:16-alpine
 
 WORKDIR /app
 
@@ -23,11 +23,9 @@ ENV NODE_ENV="production"
 
 RUN apk update && \
     apk upgrade && \
-    apk add dumb-init
+    apk add --no-cache dumb-init
 
-RUN addgroup -g 1000 node && \
-    adduser -u 1000 -G node -s /bin/sh -D node && \
-    mkdir /app/data && \
+RUN mkdir /app/data && \
     chown -R node:node /app
 
 COPY --chown=node:node --from=builder /app .
