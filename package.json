@@ -37,7 +37,7 @@
         "discord.js": "^13.0.0-dev.02f55f0.1626742085",
         "fast-xml-parser": "^3.19.0",
         "he": "^1.2.0",
-        "minecraft-protocol": "^1.25.0",
+        "minecraft-protocol": "^1.28.1",
         "node-cron": "^3.0.0",
         "utf-8-validate": "^5.0.5",
         "zlib-sync": "^0.1.7"
