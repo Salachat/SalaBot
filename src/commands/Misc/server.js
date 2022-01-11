@@ -14,7 +14,7 @@ export default {
     },
     execute: async (_, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         // Shortcut variable
         const server = command.guild;
         // Fetch bans

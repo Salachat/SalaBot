@@ -12,7 +12,7 @@ export default {
     },
     execute: async (client, command) => {
         // Defer so we can get replies easily
-        await command.defer();
+        await command.deferReply();
         // Reply
         const reply = await command.editReply("Ping?");
         // Calculate ping and edit the message

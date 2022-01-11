@@ -1,9 +1,11 @@
 import { MessageEmbed, Util } from "discord.js";
-import parser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 
 import { rss } from "../../db.js";
 import { fetchFeed, formatPost, parseFeed, getPlaceholders } from "../../rss/rssUtil.js";
 import { paginatedEmbed } from "../../util.js";
+
+const parser = new XMLParser();
 
 export default {
     // Object of command data
@@ -152,9 +154,9 @@ export default {
     },
     execute: async (client, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         // Switch based on the subcommand
-        switch (command.options.getSubCommand()) {
+        switch (command.options.getSubcommand()) {
             case "add": {
                 // Get channel and feed url from slash options
                 const channel = command.options.getChannel("channel");

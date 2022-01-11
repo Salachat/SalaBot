@@ -22,7 +22,7 @@ export default {
     },
     execute: async (_, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         // Get the user option
         const user = command.options.getUser("user");
         // Try to fetch the member

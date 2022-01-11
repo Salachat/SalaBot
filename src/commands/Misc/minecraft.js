@@ -33,7 +33,7 @@ export default {
     },
     execute: async (client, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         ping(
             {
                 host: command.options.getString("ip"),

@@ -1,6 +1,8 @@
 import bent from "bent";
-import parser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 import he from "he";
+
+const parser = new XMLParser();
 
 /**
  * Parse a RSS feed

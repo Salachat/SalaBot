@@ -30,27 +30,27 @@
         "node": ">=14"
     },
     "dependencies": {
-        "@joshdb/core": "^1.2.5",
+        "@joshdb/core": "^1.2.7",
         "@joshdb/sqlite": "^1.1.9",
         "bent": "^7.3.12",
-        "bufferutil": "^4.0.3",
-        "discord.js": "^13.0.0-dev.02f55f0.1626742085",
-        "fast-xml-parser": "^3.19.0",
+        "bufferutil": "^4.0.6",
+        "discord.js": "^13.5.0",
+        "fast-xml-parser": "^4.0.0-beta.8",
         "he": "^1.2.0",
-        "minecraft-protocol": "^1.25.0",
+        "minecraft-protocol": "^1.30.0",
         "node-cron": "^3.0.0",
-        "utf-8-validate": "^5.0.5",
+        "utf-8-validate": "^5.0.8",
         "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
-        "@commitlint/cli": "^12.1.4",
-        "@commitlint/config-conventional": "^12.1.4",
-        "eslint": "^7.31.0",
-        "eslint-config-airbnb-base": "^14.2.1",
+        "@commitlint/cli": "^16.0.1",
+        "@commitlint/config-conventional": "^16.0.0",
+        "eslint": "^8.6.0",
+        "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-import": "^2.23.4",
-        "husky": "^7.0.1",
-        "lint-staged": "^11.0.1",
-        "prettier": "^2.3.2"
+        "eslint-plugin-import": "^2.25.4",
+        "husky": "^7.0.4",
+        "lint-staged": "^12.1.5",
+        "prettier": "^2.5.1"
     }
 }

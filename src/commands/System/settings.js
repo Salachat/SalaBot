@@ -130,7 +130,7 @@ export default {
     },
     execute: async (_, command) => {
         // Defer the command as it might take a while
-        await command.defer({ ephemeral: true });
+        await command.deferReply({ ephemeral: true });
         // Ensure that the guild settings exists
         await settings.ensure(command.guild.id, config.defaultSettings);
         // Take the SubCommandGroup or the SubCommand
@@ -163,7 +163,7 @@ export default {
             case "set": {
                 // As set is a subcommand group
                 // We can get the subcommand as setting to change
-                switch (command.options.getSubCommand()) {
+                switch (command.options.getSubcommand()) {
                     case "log": {
                         // Get the channel option
                         const channel = command.options.getChannel("channel");
