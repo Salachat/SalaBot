@@ -24,6 +24,9 @@ export const settings = new Josh({
  * @property {string} url
  * @property {string} cid
  * @property {string} fid
+ * @property {object} filter
+ * @property {string[]} filter.positive
+ * @property {string[]} filter.negative
  * @property {import("./rss/rssUtil").RSSFormat} format
  * @property {any} oldData
  * @property {number} errorCount
