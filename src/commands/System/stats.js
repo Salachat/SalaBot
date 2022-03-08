@@ -13,6 +13,10 @@ export default {
         permission: 0,
         guildOnly: false,
     },
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Embed with all the data
         const embed = new MessageEmbed()

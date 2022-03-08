@@ -7,9 +7,6 @@ if (!process.env.NODE_ENV) process.env.NODE_ENV = "development";
 
 // Create the client
 const client = new Client({
-    // Caches
-    messageCacheLifetime: 60 * 60 * 24,
-    messageSweepInterval: 60 * 30,
     // Pre disable pings
     allowedMentions: { users: [], roles: [] },
     // Only the necessary intentss
@@ -23,6 +20,12 @@ const client = new Client({
     // Ws events to receive more data
     ws: {
         large_threshold: 100,
+    },
+    sweepers: {
+        messages: {
+            interval: 60 * 30,
+            lifetime: 60 * 60 * 24,
+        },
     },
 });
 

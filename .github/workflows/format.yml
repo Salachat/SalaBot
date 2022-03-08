@@ -27,7 +27,7 @@ jobs:
         id: cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install Dependencies
         if: ${{ !steps.cache.outputs.cache-hit }}

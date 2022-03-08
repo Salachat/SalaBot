@@ -40,6 +40,10 @@ export default {
         guildOnly: false,
     },
     // Keep client as unused variable because eval code might need it
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Get options and apply defaults
         const code = command.options.getString("code");

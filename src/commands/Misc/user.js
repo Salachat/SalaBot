@@ -20,6 +20,9 @@ export default {
         permission: 0,
         guildOnly: true,
     },
+    /**
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (_, command) => {
         // Defer the command as it might take a while
         await command.deferReply();
@@ -35,10 +38,10 @@ export default {
 
         // Create the embed
         const embed = new MessageEmbed()
-            .setAuthor(
-                `${user.tag}${user.bot ? " [BOT]" : ""}`,
-                user.displayAvatarURL({ dynamic: true })
-            )
+            .setAuthor({
+                name: `${user.tag}${user.bot ? " [BOT]" : ""}`,
+                iconURL: user.displayAvatarURL({ dynamic: true }),
+            })
             .setDescription(`Ping: ${user.toString()}\nID: \`${user.id}\``)
             .setThumbnail(user.displayAvatarURL({ dynamic: true }));
         // Check if users has flags aka badges
@@ -67,7 +70,7 @@ export default {
         if (member) {
             // Boosting status with markdown timestamp or a funny message
             const boosting = member.premiumSince
-                ? `Since <t:${Math.round(member.premiumSince / 1000)}>`
+                ? `Since <t:${Math.round(member.premiumSinceTimestamp / 1000)}>`
                 : "Not boosting :(";
             embed
                 .addField(

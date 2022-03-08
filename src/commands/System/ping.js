@@ -1,3 +1,5 @@
+import { Message } from "discord.js";
+
 export default {
     // Object of command data
     data: {
@@ -10,11 +12,16 @@ export default {
         permission: 0,
         guildOnly: false,
     },
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Defer so we can get replies easily
         await command.deferReply();
         // Reply
         const reply = await command.editReply("Ping?");
+        if (!(reply instanceof Message)) return;
         // Calculate ping and edit the message
         await command.editReply(
             `Pong!\nPing: ${reply.createdTimestamp - command.createdTimestamp}ms\nAPI: ${

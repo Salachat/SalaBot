@@ -1,10 +1,11 @@
+import { TextChannel } from "discord.js";
 import cron from "node-cron";
 import { rss } from "../db.js";
 import { fetchFeed, findNewEntries, formatPost } from "./rssUtil.js";
 
 /**
  * Start the RSS handler
- * @param {Client} client
+ * @param {import("discord.js").Client} client
  */
 export default (client) => {
     // Run every tenth minute
@@ -24,6 +25,7 @@ export default (client) => {
                     } catch (e) {
                         return;
                     }
+                    if (!(channel instanceof TextChannel)) return;
                     // Return if there is no channel or not enough permissions
                     if (
                         !channel

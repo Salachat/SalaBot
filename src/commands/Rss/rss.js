@@ -152,6 +152,10 @@ export default {
         permission: 1,
         guildOnly: true,
     },
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Defer the command as it might take a while
         await command.deferReply();
@@ -290,7 +294,7 @@ export default {
                             .setTitle(`Feeds (${feeds.length})`)
                             .setColor("#9799ca")
                             // paginatedEmbed function doesn't do page numbers so we have to do them here
-                            .setFooter(`Page ${i + 1}/${pages.length}`);
+                            .setFooter({ text: `Page ${i + 1}/${pages.length}` });
                         // Add a field for each feed
                         feedChunk.forEach((feed) => {
                             embed.addField(
