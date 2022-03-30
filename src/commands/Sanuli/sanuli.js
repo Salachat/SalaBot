@@ -97,8 +97,9 @@ export default {
                     .map((u) => ({
                         user: u.user,
                         total: Object.keys(u.guesses).length
-                            ? Object.values(u.guesses).reduce((a, n) => a + n, 0) /
-                              Object.keys(u.guesses).length
+                            ? Object.values(u.guesses)
+                                  .filter((n) => n !== -1)
+                                  .reduce((a, n) => a + n, 0) / Object.keys(u.guesses).length
                             : 0,
                     }))
                     .slice(0, 10)

@@ -7,7 +7,7 @@ import { sanulit } from "../db.js";
 export default async (client, newMessage) => {
     // Don't handle dms
     if (!newMessage.guild) return;
-    const matches = newMessage.content.match(/^Sanuli #(\d+) ([123456]|X)\/6/m);
+    const matches = newMessage.content.match(/^Sanuli #(\d+) ([123456X])\/6/m);
     if (matches) {
         const nth = matches[1];
         const score = parseInt(matches[2], 10);
