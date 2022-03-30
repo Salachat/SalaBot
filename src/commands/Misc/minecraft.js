@@ -50,7 +50,13 @@ export default {
                 }
                 const statusEmbed = new MessageEmbed()
                     .setThumbnail("attachment://thumbnail.png")
-                    .setTitle(`Status of ${command.options.getString("ip")}`)
+                    .setTitle(
+                        `Status of ${command.options.getString("ip")}${
+                            command.options.getInteger("port")
+                                ? `:${command.options.getInteger("port")}`
+                                : ""
+                        }`
+                    )
                     .setColor("#444444")
                     .addFields(
                         { name: "MOTD:", value: data.motd.clear },
@@ -62,11 +68,17 @@ export default {
                     );
                 const playerEmbed = new MessageEmbed()
                     .setThumbnail("attachment://thumbnail.png")
-                    .setTitle(`Playerlist of ${command.options.getString("ip")}`)
+                    .setTitle(
+                        `Playerlist of ${command.options.getString("ip")}${
+                            command.options.getInteger("port")
+                                ? `:${command.options.getInteger("port")}`
+                                : ""
+                        }`
+                    )
                     .setColor("#444444")
                     .addField(
                         `${data.players.online} / ${data.players.max} players online`,
-                        playerlist
+                        playerlist || "No playerlist available"
                     );
                 await command.editReply({
                     embeds: [statusEmbed, playerEmbed],
@@ -78,7 +90,8 @@ export default {
                     ],
                 });
             })
-            .catch(async () => {
+            .catch(async (e) => {
+                console.error(e);
                 await command.editReply("An error occured fetching the status.");
             });
     },
