@@ -12,9 +12,12 @@ export default {
         permission: 0,
         guildOnly: true,
     },
+    /**
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (_, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         // Shortcut variable
         const server = command.guild;
         // Fetch bans
@@ -29,7 +32,10 @@ export default {
         const chs = await server.channels.fetch();
         // Create the embed
         const embed = new MessageEmbed()
-            .setAuthor(server.name, server.iconURL())
+            .setAuthor({
+                name: server.name,
+                iconURL: server.iconURL(),
+            })
             .setThumbnail(server.iconURL())
             .addField("Server ID", server.id, true)
             // Fetch the owner

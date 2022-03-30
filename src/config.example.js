@@ -1,3 +1,24 @@
+import { GuildChannel, GuildMember } from "discord.js";
+
+/**
+ * @typedef Config
+ * @property {string} token
+ * @property {string[]} admins
+ * @property {string} devGuild
+ * @property {boolean} skipSlashEnsure
+ * @property {object} defaultSettings
+ * @property {object} defaultSettings.log
+ * @property {object} defaultSettings.logs
+ * @property {boolean} defaultSettings.logs.join
+ * @property {boolean} defaultSettings.logs.leave
+ * @property {boolean} defaultSettings.logs.delete
+ * @property {boolean} defaultSettings.logs.edit
+ * @property {object[]} perms
+ * @property {boolean} perms[].guildOnly
+ * @property {function(import("discord.js").CommandInteraction): boolean} perms[].check
+ */
+
+/** @type Config */
 const config = {
     // Bot token
     token: "",
@@ -28,8 +49,13 @@ const config = {
         {
             guildOnly: true,
             check: (command) => {
+                if (
+                    !(command.channel instanceof GuildChannel) ||
+                    !(command.member instanceof GuildMember)
+                )
+                    return false;
                 try {
-                    return command.member.permissionsIn(command.channel).has("ADMINISTRATOR");
+                    return command.channel.permissionsFor(command.member).has("ADMINISTRATOR");
                 } catch (e) {
                     return false;
                 }

@@ -1,9 +1,14 @@
+import container from "../container.js";
 import { perm } from "../util.js";
 
+/**
+ * @param {import("discord.js").Client} client
+ * @param {import("discord.js").CommandInteraction} command
+ */
 export default async (client, command) => {
     try {
         // Get the command handler
-        const cmd = client.commands.get(command.commandName);
+        const cmd = container.commands.get(command.commandName);
         // Check if handler exists
         if (cmd) {
             if (cmd.data.guildOnly && !command.inGuild()) {
@@ -37,10 +42,7 @@ export default async (client, command) => {
         // If command errors, try to tell the user
         try {
             if (command.replied || command.deferred) {
-                await command.editReply({
-                    content: "Something went wrong while executing that command...",
-                    ephemeral: true,
-                });
+                await command.editReply("Something went wrong while executing that command...");
             } else {
                 await command.reply({
                     content: "Something went wrong while executing that command...",

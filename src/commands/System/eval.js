@@ -40,6 +40,10 @@ export default {
         guildOnly: false,
     },
     // Keep client as unused variable because eval code might need it
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Get options and apply defaults
         const code = command.options.getString("code");
@@ -49,7 +53,7 @@ export default {
 
         // Defer for tasks that take longer
         // Hide if silent is true
-        await command.defer({ ephemeral: silent });
+        await command.deferReply({ ephemeral: silent });
 
         try {
             // Wrap code in async function if async is enabled

@@ -1,9 +1,10 @@
 import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
+import container from "./container.js";
 
 /**
  * Load events and commands to a client
- * @param {Client} client
+ * @param {import("discord.js").Client} client
  */
 const load = async (client) => {
     console.log("Loading events...");
@@ -28,7 +29,7 @@ const load = async (client) => {
     console.log("Events loaded!");
 
     console.log("Loading commands...");
-    client.commands = new Collection();
+    container.commands = new Collection();
     // List all categories and wait for them to load
     const cmdCategories = await readdir("./src/commands");
     await Promise.all(
@@ -46,7 +47,7 @@ const load = async (client) => {
                         const command = (await import(`./commands/${cat}/${f}`)).default;
                         if (!command) throw new Error("Command doesn't export default.");
                         // Save the handler in a Map
-                        client.commands.set(commandName, command);
+                        container.commands.set(commandName, command);
                     } catch (e) {
                         console.error(`Failed to load command "${commandName}"\n${e}`);
                     }

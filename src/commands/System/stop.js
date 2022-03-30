@@ -10,6 +10,9 @@ export default {
         permission: 2,
         guildOnly: false,
     },
+    /**
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (_, command) => {
         // Send a message
         await command.reply({

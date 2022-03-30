@@ -1,7 +1,11 @@
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed, TextChannel } from "discord.js";
 import { settings } from "../db.js";
 import config from "../config.js";
 
+/**
+ * @param {import("discord.js").Client} client
+ * @param {import("discord.js").Collection<string, import("discord.js").Message>} messages
+ */
 export default async (client, messages) => {
     // Don't handle dms
     if (!messages.first().guild) return;
@@ -25,7 +29,7 @@ export default async (client, messages) => {
                 messages.first().channel.id
             }\``
         )
-        .setColor("f54242");
+        .setColor("#f54242");
     let content = "";
     // Loop deleted messages
     messages
@@ -48,7 +52,10 @@ export default async (client, messages) => {
     // Create a file from all the message data
     const file = Buffer.from(content, "utf-8");
     // Check channel permissions
-    if (!channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"]))
+    if (
+        !(channel instanceof TextChannel) ||
+        !channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"])
+    )
         return;
     // Send the embed and logs
     await channel.send({

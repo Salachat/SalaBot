@@ -128,14 +128,16 @@ export default {
         permission: 1,
         guildOnly: true,
     },
+    /**
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (_, command) => {
         // Defer the command as it might take a while
-        await command.defer({ ephemeral: true });
+        await command.deferReply({ ephemeral: true });
         // Ensure that the guild settings exists
         await settings.ensure(command.guild.id, config.defaultSettings);
         // Take the SubCommandGroup or the SubCommand
-        // eslint-disable-next-line no-underscore-dangle
-        switch (command.options._group || command.options._subCommand) {
+        switch (command.options.getSubcommandGroup(false) || command.options.getSubcommand(true)) {
             case "list": {
                 // Get all settings
                 const {
@@ -163,7 +165,7 @@ export default {
             case "set": {
                 // As set is a subcommand group
                 // We can get the subcommand as setting to change
-                switch (command.options.getSubCommand()) {
+                switch (command.options.getSubcommand()) {
                     case "log": {
                         // Get the channel option
                         const channel = command.options.getChannel("channel");

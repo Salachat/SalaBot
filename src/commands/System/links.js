@@ -12,6 +12,10 @@ export default {
         permission: 0,
         guildOnly: false,
     },
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Create the embed
         const embed = new MessageEmbed().setTitle("Links").setDescription(

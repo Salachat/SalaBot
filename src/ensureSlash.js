@@ -1,8 +1,9 @@
 import config from "./config.js";
+import container from "./container.js";
 
 /**
  * Create or update slash commands
- * @param {Client} client
+ * @param {import("discord.js").Client} client
  */
 const ensure = async (client) => {
     console.log("Ensuring slash commands...");
@@ -13,7 +14,7 @@ const ensure = async (client) => {
     await devGuild.commands.fetch();
 
     // Map commands to slash data
-    const commands = client.commands.map(({ data: { slash } }) => slash);
+    const commands = container.commands.map(({ data: { slash } }) => slash);
 
     // Set the commands in dev guild or globally depending on the node environment
     if (process.env.NODE_ENV === "development") await devGuild.commands.set(commands);

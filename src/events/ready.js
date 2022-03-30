@@ -2,6 +2,9 @@ import ensureSlash from "../ensureSlash.js";
 import config from "../config.js";
 import startRss from "../rss/rssHandler.js";
 
+/**
+ * @param {import("discord.js").Client} client
+ */
 export default async (client) => {
     // Load slash commands unless config says to skip it
     if (!config.skipSlashEnsure) await ensureSlash(client);

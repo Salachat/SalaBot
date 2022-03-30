@@ -1,9 +1,11 @@
 import { MessageEmbed, Util } from "discord.js";
-import parser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 
 import { rss } from "../../db.js";
 import { fetchFeed, formatPost, parseFeed, getPlaceholders } from "../../rss/rssUtil.js";
 import { paginatedEmbed } from "../../util.js";
+
+const parser = new XMLParser();
 
 export default {
     // Object of command data
@@ -87,6 +89,14 @@ export default {
                             required: true,
                             choices: [
                                 {
+                                    name: "Positive keywords",
+                                    value: "positive",
+                                },
+                                {
+                                    name: "Negative keywords",
+                                    value: "negative",
+                                },
+                                {
                                     name: "Text Content",
                                     value: "text",
                                 },
@@ -139,7 +149,8 @@ export default {
                         {
                             type: "STRING",
                             name: "value",
-                            description: "Value for the edited property",
+                            description:
+                                "Value for the edited property. For positive and negative lists, seperate keywords with a comma.",
                             required: true,
                         },
                     ],
@@ -150,11 +161,15 @@ export default {
         permission: 1,
         guildOnly: true,
     },
+    /**
+     * @param {import("discord.js").Client} client
+     * @param {import("discord.js").CommandInteraction} command
+     */
     execute: async (client, command) => {
         // Defer the command as it might take a while
-        await command.defer();
+        await command.deferReply();
         // Switch based on the subcommand
-        switch (command.options.getSubCommand()) {
+        switch (command.options.getSubcommand()) {
             case "add": {
                 // Get channel and feed url from slash options
                 const channel = command.options.getChannel("channel");
@@ -169,9 +184,7 @@ export default {
 
                 // Check that the channel is a text channel
                 if (channel.type !== "GUILD_TEXT") {
-                    await command.editReply({
-                        content: "The channel must be a text channel.",
-                    });
+                    await command.editReply("The channel must be a text channel.");
                     return;
                 }
 
@@ -182,10 +195,9 @@ export default {
                         .has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"])
                 ) {
                     // Reply with explanation
-                    await command.editReply({
-                        content:
-                            "I am missing some permissions on that channel.\nMake sure I can view the channel, send messages and send embeds.",
-                    });
+                    await command.editReply(
+                        "I am missing some permissions on that channel.\nMake sure I can view the channel, send messages and send embeds."
+                    );
                     return;
                 }
 
@@ -197,9 +209,9 @@ export default {
                     parsedData = parser.parse(feedData);
                 } catch (e) {
                     // Reply with error if such happens
-                    await command.editReply({
-                        content: `Encountered an error in the RSS feed: \`${e.message}\``,
-                    });
+                    await command.editReply(
+                        `Encountered an error in the RSS feed: \`${e.message}\``
+                    );
                     return;
                 }
 
@@ -209,17 +221,13 @@ export default {
 
                 // Check that title exists
                 if (!feedTitle) {
-                    await command.editReply({
-                        content: "Invalid RSS feed. Couldn't find channel title.",
-                    });
+                    await command.editReply("Invalid RSS feed. Couldn't find channel title.");
                     return;
                 }
 
                 // Check that some items exists
                 if (!items) {
-                    await command.editReply({
-                        content: "Invalid RSS feed. Couldn't find any items.",
-                    });
+                    await command.editReply("Invalid RSS feed. Couldn't find any items.");
                     return;
                 }
 
@@ -231,6 +239,10 @@ export default {
                     url: feed,
                     oldData: parseFeed(feedData),
                     errorCount: 0,
+                    filter: {
+                        positive: [],
+                        negative: [],
+                    },
                     format: {
                         text: "**{title}**\n{description}\n\n<{link}>",
                         embed: {
@@ -252,11 +264,11 @@ export default {
                 await rss.inc(`${command.guildId}.autoNum`);
                 // Send a success message
                 // Escape title from markdown
-                await command.editReply({
-                    content: `${channel} is now following **${Util.escapeMarkdown(
+                await command.editReply(
+                    `${channel} is now following **${Util.escapeMarkdown(
                         feedTitle
-                    )}** (<${feed}>).\nMake sure I will have permissions to that channel.\nEdit the posts by using \`/rss edit\``,
-                });
+                    )}** (<${feed}>).\nMake sure I will have permissions to that channel.\nEdit the posts by using \`/rss edit\``
+                );
                 break;
             }
             case "list": {
@@ -270,9 +282,7 @@ export default {
                 const feeds = Object.values(guildData.feeds);
                 // Incase no feeds reply simply
                 if (feeds.length === 0) {
-                    await command.editReply({
-                        content: "No feeds subscribed.",
-                    });
+                    await command.editReply("No feeds subscribed.");
                     return;
                 }
                 // Paginate feeds
@@ -288,7 +298,7 @@ export default {
                             .setTitle(`Feeds (${feeds.length})`)
                             .setColor("#9799ca")
                             // paginatedEmbed function doesn't do page numbers so we have to do them here
-                            .setFooter(`Page ${i + 1}/${pages.length}`);
+                            .setFooter({ text: `Page ${i + 1}/${pages.length}` });
                         // Add a field for each feed
                         feedChunk.forEach((feed) => {
                             embed.addField(
@@ -312,19 +322,19 @@ export default {
                 });
                 // Test id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(feed)) {
-                    await command.editReply({
-                        content: "Invalid feed id. Use `/rss list` to find your feed id.",
-                    });
+                    await command.editReply(
+                        "Invalid feed id. Use `/rss list` to find your feed id."
+                    );
                     return;
                 }
                 // Delete the field
                 await rss.delete(`${command.guildId}.feeds.${feed}`);
                 // Reply succesfully and yet again escape markdown
-                await command.editReply({
-                    content: `Feed **${Util.escapeMarkdown(guildData.feeds[feed].title)}** (<${
+                await command.editReply(
+                    `Feed **${Util.escapeMarkdown(guildData.feeds[feed].title)}** (<${
                         guildData.feeds[feed].url
-                    }>) has been removed!`,
-                });
+                    }>) has been removed!`
+                );
                 break;
             }
             case "test": {
@@ -340,9 +350,9 @@ export default {
 
                 // Test id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(id)) {
-                    await command.editReply({
-                        content: "Invalid feed id. Use `/rss list` to find your feed id.",
-                    });
+                    await command.editReply(
+                        "Invalid feed id. Use `/rss list` to find your feed id."
+                    );
                     return;
                 }
                 // Get the specified feed
@@ -354,9 +364,9 @@ export default {
                     feedData = await fetchFeed(feed.url);
                 } catch (e) {
                     // Send error if such occurs
-                    await command.editReply({
-                        content: `Encountered an error in the RSS feed: \`${e.message}\``,
-                    });
+                    await command.editReply(
+                        `Encountered an error in the RSS feed: \`${e.message}\``
+                    );
                     return;
                 }
 
@@ -366,8 +376,8 @@ export default {
                 // If the user wants placeholders
                 if (placeholders) {
                     // Get placeholders and format them nicely
-                    await command.editReply({
-                        content: `\`\`\`md\n${getPlaceholders(randomPost)
+                    await command.editReply(
+                        `\`\`\`md\n${getPlaceholders(randomPost)
                             // Escape code blocks as to not mess formatting
                             .map(
                                 ([key, val]) =>
@@ -376,8 +386,14 @@ export default {
                             .join(
                                 "\n"
                                 // List inbuilt placeholders
-                            )}\n\`\`\`\nTo leave a field empty, use the inbuilt \`{empty}\` placeholder.\nTo get a newline, use the inbuilt \`{newline}\` placeholder.`,
-                    });
+                            )}\n\`\`\`\nPositive keywords: \`${
+                            feed.filter?.positive.map((w) => Util.escapeInlineCode(w)).join(", ") ||
+                            "*none*"
+                        }\`\nNegative keywords: \`${
+                            feed.filter?.negative.map((w) => Util.escapeInlineCode(w)).join(", ") ||
+                            "*none*"
+                        }\`\nTo leave a field empty, use the inbuilt \`{empty}\` placeholder.\nTo get a newline, use the inbuilt \`{newline}\` placeholder.`
+                    );
                 } else {
                     // Otherwise
                     try {
@@ -385,9 +401,9 @@ export default {
                         await command.editReply(formatPost(randomPost, feed.format));
                     } catch (e) {
                         // And send the error if such occurs
-                        await command.editReply({
-                            content: `Encountered an error in the RSS feed: \`${e.message}\``,
-                        });
+                        await command.editReply(
+                            `Encountered an error in the RSS feed: \`${e.message}\``
+                        );
                     }
                 }
                 break;
@@ -407,24 +423,31 @@ export default {
 
                 // Check id existance and reply simply
                 if (!Object.keys(guildData.feeds).includes(feed)) {
-                    await command.editReply({
-                        content: "Invalid feed id. Use `/rss list` to find your feed id.",
-                    });
+                    await command.editReply(
+                        "Invalid feed id. Use `/rss list` to find your feed id."
+                    );
                     return;
                 }
 
                 // Save to database and reply
-                await rss.set(`${command.guildId}.feeds.${feed}.format.${property}`, value);
-                await command.editReply({
-                    content: "Format updated. Use `/rss test` to test it out.",
-                });
+                if (["positive", "negative"].includes(property)) {
+                    await rss.set(
+                        `${command.guildId}.feeds.${feed}.filter.${property}`,
+                        value
+                            .split(",")
+                            .map((s) => s.trim())
+                            .filter(Boolean)
+                    );
+                    await command.editReply("Updated filter keywors.");
+                } else {
+                    await rss.set(`${command.guildId}.feeds.${feed}.format.${property}`, value);
+                    await command.editReply("Format updated. Use `/rss test` to test it out.");
+                }
                 break;
             }
             default: {
                 // This shouldn't ever trigger but handle it anyway
-                await command.editReply({
-                    content: "Unknown subcommand.",
-                });
+                await command.editReply("Unknown subcommand.");
             }
         }
     },

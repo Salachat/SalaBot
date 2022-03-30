@@ -1,10 +1,11 @@
+import { GuildChannel, Message } from "discord.js";
 import { inspect } from "util";
 import config from "./config.js";
 
 /**
  * Get the users permission
- * @param {CommandInteraction} command
- * @returns {Number} the author's permission level in that context
+ * @param {import("discord.js").CommandInteraction} command
+ * @returns {number} the author's permission level in that context
  */
 export const perm = (command) => {
     let lvl = 0;
@@ -19,8 +20,8 @@ export const perm = (command) => {
 
 /**
  * Cleanup the eval response of tokesn and format objects.
- * @param {String} res the eval response
- * @returns {String} cleaned up string
+ * @param {any} res the eval response
+ * @returns {string} cleaned up string
  */
 export const cleanEvalResponse = (res) => {
     // If response is a string, replace tokens and cut the text
@@ -31,15 +32,15 @@ export const cleanEvalResponse = (res) => {
 
 /**
  * Format eval duration to micro or milliseconds
- * @param {*} ms milliseconds
- * @returns {String} formatted time
+ * @param {number} ms milliseconds
+ * @returns {string} formatted time
  */
 export const formatEvalMs = (ms) => {
     let value = null;
     let unit = null;
     // Check if the eval was faster than a millisecond
     if (ms < 1) {
-        // Set unit and do match
+        // Set unit and do math
         unit = "μs";
         value = Math.round(ms * 1000);
     } else {
@@ -75,11 +76,11 @@ const shorts = {
 
 /**
  * Format a duration of milliseconds
- * @param {Number} ms milliseconds
- * @param {Object} [options={}] options for the format
- * @param {Boolean} [options.short=false] short or long names for units
- * @param {Number} [options.amount=3]
- * @returns {String} formatted duration
+ * @param {number} ms milliseconds
+ * @param {object} [options={}] options for the format
+ * @param {boolean} [options.short=false] short or long names for units
+ * @param {number} [options.amount=3] amount of units
+ * @returns {string} formatted duration
  */
 export const formatDuration = (ms, options = {}) => {
     if (typeof ms !== "number") throw new TypeError("Ms needs to be a number.");
@@ -135,12 +136,12 @@ export const formatDuration = (ms, options = {}) => {
 
 /**
  * Create a paginated embed for multiple pages of content
- * @param {Client} client the discord client
- * @param {CommandInteraction} command the command to reply to
- * @param {Array<MessageEmbed>} pages the pages of the embed
- * @param {MessageEmbed|null} [endpage=null] the page shown after time runs out
- * @param {Number} timeout time to be interactive in milliseconds
- * @returns
+ * @param {import("discord.js").Client} client the discord client
+ * @param {import("discord.js").CommandInteraction} command the command to reply to
+ * @param {Array<import("discord.js").MessageEmbed>} pages the pages of the embed
+ * @param {import("discord.js").MessageEmbed|null} [endpage=null] the page shown after time runs out
+ * @param {number} timeout time to be interactive in milliseconds
+ * @returns {Promise<import("discord.js").Message>}
  */
 export const paginatedEmbed = async (client, command, pages, endpage = null, timeout = 120_000) => {
     let page = 0;
@@ -155,6 +156,8 @@ export const paginatedEmbed = async (client, command, pages, endpage = null, tim
     // Fetch the message
     const embedMsg = await command.fetchReply();
 
+    if (!(embedMsg instanceof Message)) throw new Error("Bullshit detector tripped off");
+
     // Add control emojis
     // eslint-disable-next-line no-await-in-loop
     for (let i = 0; i < controls.length; i += 1) await embedMsg.react(controls[i]);
@@ -162,8 +165,9 @@ export const paginatedEmbed = async (client, command, pages, endpage = null, tim
     // Collector to interact with reaction
     const collector = embedMsg.createReactionCollector(
         // Filter out other users
-        (reaction, user) => controls.includes(reaction.emoji.name) && user.id === command.user.id,
         {
+            filter: (reaction, user) =>
+                controls.includes(reaction.emoji.name) && user.id === command.user.id,
             time: timeout,
             dispose: true,
         }
@@ -171,11 +175,14 @@ export const paginatedEmbed = async (client, command, pages, endpage = null, tim
 
     /**
      * Handle control clicks
-     * @param {MessageReaction} reaction
+     * @param {import("discord.js").MessageReaction} reaction
      */
     const changePage = async (reaction) => {
         // Remove the reaction if sufficient permissions
-        if (command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+        if (
+            command.channel instanceof GuildChannel &&
+            command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES")
+        )
             await reaction.users.remove(command.user);
         switch (reaction.emoji.name) {
             case controls[0]:
@@ -199,26 +206,32 @@ export const paginatedEmbed = async (client, command, pages, endpage = null, tim
     // Handle clicks on collect
     collector.on("collect", changePage);
     // Handle clicks on remove if no permissions to automatically remove
-    if (!command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+    if (
+        !(command.channel instanceof GuildChannel) ||
+        !command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES")
+    )
         collector.on("remove", changePage);
 
     // Handle timeout or x button
     collector.on("end", async () => {
         // If the message is not deleted
-        if (!embedMsg.deleted) {
+        if (!embedMsg.deletable) {
             // Remove all reactions if having enough permissions
-            if (command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES"))
+            if (
+                command.channel instanceof GuildChannel &&
+                command.channel.permissionsFor(client.user.id).has("MANAGE_MESSAGES")
+            )
                 await embedMsg.reactions.removeAll();
             // Edit the message with endpage if exists
             if (endpage !== null) {
-                await embedMsg.edit(endpage);
+                await embedMsg.edit({ embeds: [endpage] });
             } else {
                 // Otherwise edit current page footer to explain situation
                 const modifiedPage = pages[page];
-                modifiedPage.setFooter(
-                    `${modifiedPage?.footer?.text ?? ""} | This session has ended`,
-                    modifiedPage?.footer?.iconURL
-                );
+                modifiedPage.setFooter({
+                    text: `${modifiedPage?.footer?.text ?? ""} | This session has ended`,
+                    iconURL: modifiedPage?.footer?.iconURL,
+                });
                 await embedMsg.edit({ embeds: [modifiedPage] });
             }
         }

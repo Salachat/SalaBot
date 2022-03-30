@@ -1,7 +1,12 @@
-import { MessageEmbed, Util } from "discord.js";
+import { MessageEmbed, TextChannel, Util } from "discord.js";
 import { settings } from "../db.js";
 import config from "../config.js";
 
+/**
+ * @param {import("discord.js").Client} client
+ * @param {import("discord.js").Message} oldMessage
+ * @param {import("discord.js").Message} newMessage
+ */
 export default async (client, oldMessage, newMessage) => {
     // Don't handle dms
     if (!oldMessage.guild) return;
@@ -23,7 +28,10 @@ export default async (client, oldMessage, newMessage) => {
     if (oldMessage.content === newMessage.content) return;
     // Create an embed with all necessary information
     const embed = new MessageEmbed()
-        .setAuthor(oldMessage.author.tag, oldMessage.author.displayAvatarURL({ dynamic: true }))
+        .setAuthor({
+            name: oldMessage.author.tag,
+            iconURL: oldMessage.author.displayAvatarURL({ dynamic: true }),
+        })
         .setDescription(
             `**Message Edited**\n**Channel:** ${oldMessage.channel} (\`${
                 oldMessage.channel.id
@@ -33,9 +41,12 @@ export default async (client, oldMessage, newMessage) => {
                 Util.cleanCodeBlockContent(newMessage.content) || "\u200b"
             }\n\`\`\``
         )
-        .setColor("2a97f7");
+        .setColor("#2a97f7");
     // Check channel permissions
-    if (!channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"]))
+    if (
+        !(channel instanceof TextChannel) ||
+        !channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"])
+    )
         return;
     // And send the embed
     await channel.send({ embeds: [embed] });

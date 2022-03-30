@@ -1,11 +1,13 @@
 import bent from "bent";
-import parser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 import he from "he";
+
+const parser = new XMLParser();
 
 /**
  * Parse a RSS feed
- * @param {String} data raw xml data
- * @returns {Object} complex object containing the feed items
+ * @param {string} data raw xml data
+ * @returns {object} complex object containing the feed items
  */
 export const parseFeed = (data) => {
     // Way too complex of a regex to expand link xml fields so that the parsers understands them
@@ -32,15 +34,15 @@ export const parseFeed = (data) => {
 
 /**
  * Fetch a feed
- * @param {String} url RSS feed url
- * @param {Boolean} [raw=false] don't parse data
- * @returns {Object} parsed feed items or raw data
+ * @param {string} url RSS feed url
+ * @param {boolean} [raw=false] don't parse data
+ * @returns {Promise<any>} parsed feed items or raw data
  */
 export const fetchFeed = async (url, raw = false) => {
     let data;
     try {
         // Fetch feed
-        data = await bent("GET", url, "string")();
+        data = await bent("GET", "string")(url);
     } catch (e) {
         throw new Error(`Feed url threw unexpected "${e.message}"`);
     }
@@ -50,17 +52,17 @@ export const fetchFeed = async (url, raw = false) => {
 
 /**
  * Simply test object equality with JSON.stringify()
- * @param {Object} obj1
- * @param {Object} obj2
- * @returns {Boolean} result
+ * @param {any} obj1
+ * @param {any} obj2
+ * @returns {boolean} result
  */
 const simpleObjEqual = (obj1, obj2) => JSON.stringify(obj1) === JSON.stringify(obj2);
 
 /**
  * Compared two arrays of data and find the new items in the second one
- * @param {Array<Object>} oldData data to compare to
- * @param {Array<Object>} newData data to find entries from
- * @returns {Array<Object>} the new entries
+ * @param {Array<any>} oldData data to compare to
+ * @param {Array<any>} newData data to find entries from
+ * @returns {Array<any>} the new entries
  */
 export const findNewEntries = (oldData, newData) =>
     // Use array reduce to reduce newData into a smaller array which fills the condition
@@ -76,8 +78,8 @@ export const findNewEntries = (oldData, newData) =>
 
 /**
  * Parse a timestamp and return it as Discord markdown
- * @param {Number} raw some datetime in some format
- * @returns {String} Discord markdown for that datetime
+ * @param {string} raw some datetime in some format
+ * @returns {string} Discord markdown for that datetime
  */
 const formatPubDate = (raw) => {
     // Parse date
@@ -90,8 +92,8 @@ const formatPubDate = (raw) => {
 
 /**
  * Extract the simple keys and values of complex objects
- * @param {Object} entry RSS feed entry
- * @returns {Array<Array<String, String>>}
+ * @param {object} entry RSS feed entry
+ * @returns {Array<Array<string, string>>}
  */
 export const getPlaceholders = (entry) =>
     Object.entries(entry)
@@ -114,9 +116,9 @@ export const getPlaceholders = (entry) =>
 
 /**
  * Replace placeholders in a text
- * @param {Object} entry the object to get data from
- * @param {String} text the text with placeholders
- * @returns {String} filled text
+ * @param {any} entry the object to get data from
+ * @param {string} text the text with placeholders
+ * @returns {string} filled text
  */
 const replacePlaceholders = (entry, text) => {
     // Get placeholders for current entry
@@ -139,17 +141,37 @@ const replacePlaceholders = (entry, text) => {
 
 /**
  * Just a shorthand for {@link replacePlaceholders}
- * @param {Object} entry the object to get data from
- * @param {String} text the text with placeholders
- * @returns {String} filled text
+ * @param {object} entry the object to get data from
+ * @param {string} text the text with placeholders
+ * @returns {string} filled text
  */
 const formatPostText = (entry, text) => replacePlaceholders(entry, text);
 
 /**
+ * @typedef RSSEmbedFormat
+ * @property {string} title
+ * @property {string} description
+ * @property {string} url
+ * @property {string} color
+ * @property {string} footer-text
+ * @property {string} footer-icon_url
+ * @property {string} author-name
+ * @property {string} author-url
+ * @property {string} author-icon_url
+ * @property {string} thumbnail-url
+ */
+
+/**
+ * @typedef RSSFormat
+ * @property {string} text
+ * @property {RSSEmbedFormat} embed
+ */
+
+/**
  * Format a embed format specific by user with placeholders from RSS feed entry
- * @param {Object} entry the RSS feed entry
- * @param {Object} embed user specified format
- * @returns {APIEmbed} valid embed to be passed to Discord
+ * @param {any} entry the RSS feed entry
+ * @param {RSSEmbedFormat} embed user specified format
+ * @returns {import("discord.js").MessageEmbedOptions} valid embed to be passed to Discord
  */
 const formatPostEmbed = (entry, embed) => {
     // Filter out empty embed fields
@@ -187,9 +209,9 @@ const formatPostEmbed = (entry, embed) => {
 
 /**
  * Create a valid message object from RSS feed entry and user specified embed and text formats
- * @param {Object} entry the RSS feed entry
- * @param {Object} format user specified format
- * @returns {BaseMessageOptions} valid message to be passed to Discord
+ * @param {any} entry the RSS feed entry
+ * @param {RSSFormat} format user specified format
+ * @returns {import("discord.js").MessageOptions} valid message to be passed to Discord
  */
 export const formatPost = (entry, format) => {
     // Prepare the valid message object

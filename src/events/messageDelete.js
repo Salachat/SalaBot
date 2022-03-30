@@ -1,7 +1,11 @@
-import { MessageEmbed, Util } from "discord.js";
+import { MessageEmbed, TextChannel, Util } from "discord.js";
 import { settings } from "../db.js";
 import config from "../config.js";
 
+/**
+ * @param {import("discord.js").Client} client
+ * @param {import("discord.js").Message} message
+ */
 export default async (client, message) => {
     // Don't handle dms
     if (!message.guild) return;
@@ -21,7 +25,10 @@ export default async (client, message) => {
     }
     // Create an embed with all necessary information
     const embed = new MessageEmbed()
-        .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
         .setDescription(
             `**Message Deleted**\n**Channel:** ${message.channel} (\`${message.channel.id}\`)\n${
                 message.content.length > 0
@@ -29,7 +36,7 @@ export default async (client, message) => {
                     : ""
             }`
         )
-        .setColor("f54242");
+        .setColor("#f54242");
     // If the message had attachements
     if (message.attachments.size > 0) {
         // Add field with the names and proxy urls incase they are still cached
@@ -39,7 +46,10 @@ export default async (client, message) => {
         );
     }
     // Check channel permissions
-    if (!channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"]))
+    if (
+        !(channel instanceof TextChannel) ||
+        !channel.permissionsFor(client.user).has(["SEND_MESSAGES", "EMBED_LINKS", "VIEW_CHANNEL"])
+    )
         return;
     // And send the embed
     await channel.send({ embeds: [embed] });
