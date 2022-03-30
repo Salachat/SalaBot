@@ -7,11 +7,11 @@ import { sanulit } from "../db.js";
 export default async (client, newMessage) => {
     // Don't handle dms
     if (!newMessage.guild) return;
-    let matches = newMessage.content.match(/Sanuli #(\d+) (\d)\/6/i);
+    const matches = newMessage.content.match(/Sanuli #(\d+) (\d)\/6/i);
     if (matches) {
-        let nth = matches[1];
-        let score = parseInt(matches[2], 10);
-        let userid = newMessage.author.id;
+        const nth = matches[1];
+        const score = parseInt(matches[2], 10);
+        const userid = newMessage.author.id;
 
         await sanulit.ensure(userid, {
             user: userid,
