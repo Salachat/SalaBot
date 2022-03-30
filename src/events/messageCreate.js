@@ -19,6 +19,5 @@ export default async (client, newMessage) => {
         });
 
         await sanulit.set(`${userid}.guesses.${nth}`, score);
-        console.log(await sanulit.values);
     }
 };
