@@ -35,21 +35,21 @@
         "bent": "^7.3.12",
         "bufferutil": "^4.0.6",
         "discord.js": "^13.6.0",
-        "fast-xml-parser": "^4.0.6",
+        "fast-xml-parser": "^4.0.7",
         "he": "^1.2.0",
         "node-cron": "^3.0.0",
         "pingmc": "^3.1.0",
-        "utf-8-validate": "^5.0.8",
+        "utf-8-validate": "^5.0.9",
         "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
-        "eslint": "^8.10.0",
+        "eslint": "^8.12.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.25.4",
         "husky": "^7.0.4",
-        "lint-staged": "^12.3.5",
-        "prettier": "^2.5.1"
+        "lint-staged": "^12.3.7",
+        "prettier": "^2.6.1"
     },
     "eslintConfig": {
         "env": {
