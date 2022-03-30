@@ -18,6 +18,11 @@ export default async (client, newMessage) => {
             guesses: {},
         });
 
+        if ((await sanulit.get(`${userid}.guesses.${nth}`)) != null) {
+            await newMessage.reply(`You dumb bitch, you already submitted today!`);
+            return;
+        }
+
         await sanulit.set(`${userid}.guesses.${nth}`, Number.isNaN(score) ? -1 : score);
     }
 };
