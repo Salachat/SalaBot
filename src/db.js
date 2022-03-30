@@ -45,3 +45,14 @@ export const rss = new Josh({
     name: "rss",
     provider,
 });
+
+/**
+ * @typedef Sanuli
+ * @property {string} user
+ * @property {Record<string, number>} guesses
+ */
+/** @type {Josh<Sanuli>} */
+export const sanulit = new Josh({
+    name: "sanulit",
+    provider,
+});
