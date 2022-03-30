@@ -1,6 +1,6 @@
 import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
-import container from "./container";
+import container from "./container.js";
 
 /**
  * Load events and commands to a client
