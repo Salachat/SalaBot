@@ -79,11 +79,12 @@ export default {
                                 Math.max(guesses.lastIndexOf(-1), guesses.lastIndexOf(0))
                             }` +
                             `\n__Best streak__: ${guesses.reduce((best, _, index, arr) => {
+                                if (arr[index] < 1) return best;
                                 const part = arr.slice(index);
-                                if (part[0] < 1) return best;
                                 const nextFail = part.indexOf(-1);
                                 const nextUnattended = part.indexOf(0);
-                                if (nextFail === -1 && nextUnattended === -1) return part.length;
+                                if (nextFail === -1 && nextUnattended === -1)
+                                    return part.length > best ? part.length : best;
                                 const streak = nextFail === -1 ? nextUnattended : nextFail;
                                 return streak > best ? streak : best;
                             }, 0)}` +
