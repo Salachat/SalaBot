@@ -76,12 +76,15 @@ export default {
                             `\n__Streak__: ${
                                 guesses.length -
                                 1 -
-                                Math.min(guesses.lastIndexOf(-1), guesses.lastIndexOf(0))
+                                Math.max(guesses.lastIndexOf(-1), guesses.lastIndexOf(0))
                             }` +
                             `\n__Best streak__: ${guesses.reduce((best, _, index, arr) => {
                                 const part = arr.slice(index);
-                                let streak = Math.min(part.indexOf(-1), part.indexOf(0));
-                                streak = streak === -1 ? arr.length - index : streak;
+                                if (part[0] < 1) return best;
+                                const nextFail = part.indexOf(-1);
+                                const nextUnattended = part.indexOf(0);
+                                if (nextFail === -1 && nextUnattended === -1) return part.length;
+                                const streak = nextFail === -1 ? nextUnattended : nextFail;
                                 return streak > best ? streak : best;
                             }, 0)}` +
                             `\n__Average guesses__: ${
