@@ -65,7 +65,9 @@ export default {
                     .reduce((a, b) => a + b);
                 const wonGames = guesses.filter((n) => n > 0);
                 const embed = new MessageEmbed()
-                    .setTitle(`Sanulis of ${command.user.tag}`)
+                    .setTitle(
+                        `Sanulis of ${command.options.getUser("user")?.tag ?? command.user.tag}`
+                    )
                     .setColor("#F4AFAB")
                     .setDescription(
                         "**Statistics**" +
