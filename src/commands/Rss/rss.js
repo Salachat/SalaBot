@@ -438,7 +438,7 @@ export default {
                             .map((s) => s.trim())
                             .filter(Boolean)
                     );
-                    await command.editReply("Updated filter keywors.");
+                    await command.editReply("Updated filter keywords.");
                 } else {
                     await rss.set(`${command.guildId}.feeds.${feed}.format.${property}`, value);
                     await command.editReply("Format updated. Use `/rss test` to test it out.");
