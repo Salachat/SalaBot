@@ -54,16 +54,21 @@ export default {
                           .fill(0)
                           .map((v, i) => data.guesses[i] ?? v)
                     : [];
-                const stats = guesses.reduce((g, n) => {
+                const wonGames = guesses.filter((n) => n > 0);
+                const stats = wonGames.reduce((g, n) => {
                     const k = n.toString();
                     g[k] = g[k] ? g[k] + 1 : 1;
                     return g;
                 }, {});
+                const distPadLength =
+                    Object.values(stats)
+                        .map((e) => e.toString().length)
+                        .sort((a, b) => b - a)[0] ?? 1;
+                const distPad = (n) => n.toString().padStart(distPadLength, " ");
                 const totalStat = Array(6)
                     .fill()
                     .map((_, i) => stats[i + 1] ?? 0)
                     .reduce((a, b) => a + b);
-                const wonGames = guesses.filter((n) => n > 0);
                 const embed = new MessageEmbed()
                     .setTitle(
                         `Sanulis of ${command.options.getUser("user")?.tag ?? command.user.tag}`
@@ -98,22 +103,22 @@ export default {
                             }` +
                             "\n" +
                             "\n**Distribution**" +
-                            `\n\`1: ${stats["1"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`1: ${distPad(stats["1"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["1"] / totalStat) * 11)
                             )}` +
-                            `\n\`2: ${stats["2"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`2: ${distPad(stats["2"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["2"] / totalStat) * 11)
                             )}` +
-                            `\n\`3: ${stats["3"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`3: ${distPad(stats["3"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["3"] / totalStat) * 11)
                             )}` +
-                            `\n\`4: ${stats["4"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`4: ${distPad(stats["4"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["4"] / totalStat) * 11)
                             )}` +
-                            `\n\`5: ${stats["5"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`5: ${distPad(stats["5"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["5"] / totalStat) * 11)
                             )}` +
-                            `\n\`6: ${stats["6"] ?? 0}\` ${"🟩".repeat(
+                            `\n\`6: ${distPad(stats["6"] ?? 0)}\` ${"🟩".repeat(
                                 Math.floor((stats["6"] / totalStat) * 11)
                             )}`
                     );
