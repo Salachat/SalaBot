@@ -80,16 +80,15 @@ export default {
                                 1 -
                                 Math.max(guesses.lastIndexOf(-1), guesses.lastIndexOf(0))
                             }` +
-                            `\n__Best streak__: ${guesses.reduce((best, _, index, arr) => {
-                                if (arr[index] < 1) return best;
-                                const part = arr.slice(index);
-                                const nextFail = part.indexOf(-1);
-                                const nextUnattended = part.indexOf(0);
-                                if (nextFail === -1 && nextUnattended === -1)
-                                    return part.length > best ? part.length : best;
-                                const streak = nextFail === -1 ? nextUnattended : nextFail;
-                                return streak > best ? streak : best;
-                            }, 0)}` +
+                            `\n__Best streak__: ${
+                                guesses.reduce(
+                                    ([b, c], v) => [
+                                        Math.max(b, v > 0 ? c + 1 : 0),
+                                        v > 0 ? c + 1 : 0,
+                                    ],
+                                    [0, 0]
+                                )[0]
+                            }` +
                             `\n__Average guesses__: ${
                                 playedGames
                                     ? (
@@ -124,15 +123,17 @@ export default {
             case "leaderboard": {
                 const data = await sanulit.values;
                 const top10 = data
-                    .map((u) => ({
-                        user: u.user,
-                        total: Object.keys(u.guesses).length
-                            ? Object.values(u.guesses)
-                                  .filter((n) => n !== -1)
-                                  .reduce((a, n) => a + n, 0) / Object.keys(u.guesses).length
-                            : 0,
-                    }))
-                    .sort((a, b) => b.total - a.total)
+                    .map((u) => {
+                        const guesses = Object.values(u.guesses).filter((n) => n !== -1);
+                        return {
+                            user: u.user,
+                            total: guesses.length
+                                ? guesses.reduce((a, n) => a + n, 0) / guesses.length
+                                : -1,
+                        };
+                    })
+                    .filter(({ total }) => total !== -1)
+                    .sort((a, b) => a.total - b.total)
                     .slice(0, 10);
                 const embed = new MessageEmbed()
                     .setTitle("Sanuli Leaderboard")
