@@ -100,22 +100,22 @@ export default {
                             "\n" +
                             "\n**Distribution**" +
                             `\n\`1: ${stats["1"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["1"]) * 11)
+                                Math.floor((stats["1"] / totalStat) * 11)
                             )}` +
                             `\n\`2: ${stats["2"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["2"]) * 11)
+                                Math.floor((stats["2"] / totalStat) * 11)
                             )}` +
                             `\n\`3: ${stats["3"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["3"]) * 11)
+                                Math.floor((stats["3"] / totalStat) * 11)
                             )}` +
                             `\n\`4: ${stats["4"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["4"]) * 11)
+                                Math.floor((stats["4"] / totalStat) * 11)
                             )}` +
                             `\n\`5: ${stats["5"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["5"]) * 11)
+                                Math.floor((stats["5"] / totalStat) * 11)
                             )}` +
                             `\n\`6: ${stats["6"] ?? 0}\` ${"🟩".repeat(
-                                Math.floor((totalStat / stats["6"]) * 11)
+                                Math.floor((stats["6"] / totalStat) * 11)
                             )}`
                     );
                 await command.editReply({ embeds: [embed] });
