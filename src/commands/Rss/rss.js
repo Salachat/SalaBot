@@ -387,11 +387,13 @@ export default {
                                 "\n"
                                 // List inbuilt placeholders
                             )}\n\`\`\`\nPositive keywords: \`${
-                            feed.filter?.positive.map((w) => Util.escapeInlineCode(w)).join(", ") ||
-                            "*none*"
+                            feed.filter?.positive
+                                ?.map((w) => Util.escapeInlineCode(w))
+                                .join(", ") || "*none*"
                         }\`\nNegative keywords: \`${
-                            feed.filter?.negative.map((w) => Util.escapeInlineCode(w)).join(", ") ||
-                            "*none*"
+                            feed.filter?.negative
+                                ?.map((w) => Util.escapeInlineCode(w))
+                                .join(", ") || "*none*"
                         }\`\nTo leave a field empty, use the inbuilt \`{empty}\` placeholder.\nTo get a newline, use the inbuilt \`{newline}\` placeholder.`
                     );
                 } else {

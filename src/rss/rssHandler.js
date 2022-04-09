@@ -74,12 +74,12 @@ export default (client) => {
                             .filter((entry) => {
                                 const values = getPlaceholders(entry).map(([, v]) => v);
                                 return (
-                                    (filter?.positive.length
+                                    (filter?.positive?.length
                                         ? filter.positive.some((v) =>
                                               values.some((v2) => v2.includes(v))
                                           )
                                         : true) &&
-                                    (filter?.negative.length
+                                    (filter?.negative?.length
                                         ? !filter.negative.some((v) =>
                                               values.some((v2) => v2.includes(v))
                                           )
