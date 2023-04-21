@@ -216,7 +216,7 @@ export default {
                 }
 
                 // Get feed title and items
-                const feedTitle = parsedData?.rss?.channel?.title ?? parsedData?.feed?.title;
+                const feedTitle = parsedData?.rss?.channel?.title ?? parsedData?.feed?.title ?? "untitled feed";
                 const items = parsedData?.rss?.channel?.item ?? parsedData?.feed?.entry;
 
                 // Check that title exists
