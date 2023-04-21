@@ -216,14 +216,8 @@ export default {
                 }
 
                 // Get feed title and items
-                const feedTitle = parsedData?.rss?.channel?.title ?? parsedData?.feed?.title ?? "untitled feed";
+                const feedTitle = (parsedData?.rss?.channel?.title ?? parsedData?.feed?.title) || "untitled feed";
                 const items = parsedData?.rss?.channel?.item ?? parsedData?.feed?.entry;
-
-                // Check that title exists
-                if (!feedTitle) {
-                    await command.editReply("Invalid RSS feed. Couldn't find channel title.");
-                    return;
-                }
 
                 // Check that some items exists
                 if (!items) {
