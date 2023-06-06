@@ -35,7 +35,7 @@
         "bent": "^7.3.12",
         "bufferutil": "^4.0.6",
         "discord.js": "^13.6.0",
-        "fast-xml-parser": "^4.0.7",
+        "fast-xml-parser": "^4.2.4",
         "he": "^1.2.0",
         "node-cron": "^3.0.0",
         "pingmc": "^3.1.0",
